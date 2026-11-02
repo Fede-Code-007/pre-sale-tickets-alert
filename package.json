@@ -1,0 +1,30 @@
+{
+  "name": "pre-sale-tickets-alert",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fede-Code-007/pre-sale-tickets-alert.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Fede-Code-007/pre-sale-tickets-alert/issues"
+  },
+  "homepage": "https://github.com/Fede-Code-007/pre-sale-tickets-alert#readme",
+  "dependencies": {
+    "nodemailer": "^10.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/nodemailer": "^8.0.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
