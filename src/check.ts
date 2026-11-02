@@ -5,7 +5,7 @@ import nodemailer from "nodemailer";
 // Película a detectar (se puede cambiar por variable de entorno para probar)
 const MOVIE = new RegExp(
   process.env.MOVIE_REGEX ??
-    "amanecer en la cosecha|sunrise on the reaping|hunger games|juegos del hambre|avengers",
+    "amanecer en la cosecha|sunrise on the reaping|hunger games|juegos del hambre",
   "i"
 );
 const UA = "Mozilla/5.0 (aviso-entradas personal bot)";
