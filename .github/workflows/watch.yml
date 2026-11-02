@@ -1,0 +1,32 @@
+name: Vigilar entradas
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # cada 5 minutos
+  workflow_dispatch:          # para correrlo a mano
+
+permissions:
+  actions: write   # para que pueda deshabilitarse a sí mismo
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - id: run
+        run: npx tsx src/check.ts
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+      - name: Deshabilitar workflow tras el aviso
+        if: steps.run.outputs.found == 'true'
+        run: gh workflow disable "Vigilar entradas"
+        env:
+          GH_TOKEN: ${{ github.token }}
