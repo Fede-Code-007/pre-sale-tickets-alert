@@ -6,7 +6,7 @@ on:
   workflow_dispatch:          # para correrlo a mano
 
 permissions:
-  actions: write   # para que pueda deshabilitarse a sí mismo
+  actions: write   # para que pueda deshabilitarse a sí mismo y manejar la caché
   contents: read
 
 jobs:
@@ -19,14 +19,33 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+
+      # Recupera el registro de qué sitios ya avisaron (el más reciente)
+      - name: Restaurar estado
+        uses: actions/cache/restore@v4
+        with:
+          path: state
+          key: notified-${{ github.run_id }}
+          restore-keys: notified-
+
       - id: run
         run: npx tsx src/check.ts
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
-      - name: Deshabilitar workflow tras el aviso
-        if: steps.run.outputs.found == 'true'
+
+      # Solo se guarda cuando hubo un aviso nuevo
+      - name: Guardar estado
+        if: always() && steps.run.outputs.changed == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: state
+          key: notified-${{ github.run_id }}
+
+      # Solo se apaga cuando ya avisaron todos los sitios
+      - name: Deshabilitar workflow tras avisar todos
+        if: steps.run.outputs.done == 'true'
         run: gh workflow disable "Vigilar entradas"
         env:
           GH_TOKEN: ${{ github.token }}
